@@ -1,0 +1,76 @@
+
+
+/* Lazyload -------------------------------------
+*  https://github.com/aFarkas/lazysizes
+*/
+
+.no-js img.lazyload {
+   display: none;
+ }
+
+.lazyload,
+.lazyloading {
+   opacity: 0;
+}
+
+.lazyloaded {
+   opacity: 1;
+   transition: opacity 300ms;
+}
+
+   /* Dealing with Microsoft Edge problems */
+   img[data-src],
+   img[data-srcset] {
+     display: block;
+     min-height: 1px;
+   }
+
+
+/* Animations ------------------------------------- */
+
+/* Used by lazysizes */
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Firefox < 16 */
+@-moz-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Internet Explorer */
+@-ms-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Opera < 12.1 */
+@-o-keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+} 
+
+
+
+/* Lazyload placeholder graphic */
+
+.ixn-gallery__img-wrapper,
+.ixn-picture__picture,
+.ixn-picture-floating__picture,
+.modal--fit-picture-size .c-gallery__picture,
+.post__img {   
+   background-color: var(--ixn-color-primary--tint-10); 
+   background-position: left top;
+   background-repeat: no-repeat; 
+   background-size: 100% 100%;
+   display: inline-block;
+}
