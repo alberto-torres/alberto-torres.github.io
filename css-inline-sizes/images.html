@@ -1,0 +1,511 @@
+<html>
+     <head>
+
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          
+          <link rel="stylesheet" href="../theme-styles.css">
+
+          <style>
+
+          	/* The style in this block are for layout purposes */
+
+
+			/* Placeholder graphic */
+
+			.ixn-picture__placeholder {   
+			   background-color: #ffffd9; 
+			   background-position: left top;
+			   background-repeat: no-repeat; 
+			   background-size: 100% 100%;
+			   background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjMuMzkgMjM4LjI1Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDojZmZmO308L3N0eWxlPjwvZGVmcz48cGF0aCBjbGFzcz0iYSIgZD0iTTE1OSwyMzguMjUsMCwwSDguNjdMMTYzLjM5LDIzOC4yNVoiLz48L3N2Zz4=");
+			   display: inline-block;
+			}
+
+			/* Figure */
+			
+			body {
+				text-align: center;
+				font-family: "Trebuchet MS", Tahoma, sans-serif;
+				/* background-color: var(--ixi-color-primary--tint-80); */
+				font-size: 14pt;
+				line-height: 21pt;
+				letter-spacing: 0.3pt;
+				color: #4D4945;
+			}
+
+			figure { margin: 0; }
+
+			/* Typography */
+
+			h1 {
+				font-size: 39pt;
+				line-height: 60pt;
+				letter-spacing: 1pt;
+			}
+
+			h2 {
+				font-size: 25pt;
+				line-height: 42pt;
+				letter-spacing: -0.5pt;
+			}
+
+	       	/* Flexbox */
+	       
+	       	.ixn-flexbox {
+			    display: flex;
+			    flex-wrap: wrap;
+			    justify-content: center;
+			    align-items: stretch;
+			    align-content: flex-start;
+			    width: 100%;
+			    overflow: auto;
+			    flex-direction: row;
+			}
+
+				.ixn-flexbox__item {
+				    
+				    flex-basis: auto;
+				    margin: 12px;
+				}
+
+			/* Fluid picture */
+
+			.ixn-fluid { 
+				width: 100%; 
+				max-width: 100%;
+				height: auto;
+			}
+
+			.ixn-picture--fluid { 
+				display: flex;
+				align-items: stretch;
+				justify-content: center;
+				flex-direction: column;
+
+			}
+
+				.ixn-picture--fluid .ixn-picture__picture {
+					align-items: center;
+					display: inline-flex;
+					margin: 0 !important;
+					max-width: 100%;
+					max-height: 100%;
+					min-width: 100%;
+					min-height: 100%;
+				}
+
+				.ixn-picture--fluid .ixn-picture__img {
+					min-width: 100%;
+					min-height: 100%;
+					/*
+					flex: 1;
+					object-fit: contain;
+					*/
+				}
+
+			/* Floated picture */
+
+			.ixn-floated { max-width: 600px; margin: 0 auto; text-align: left; }
+
+			.ixn-picture-floating__picture {
+			   float: none;
+			}
+
+
+			@media only screen and (min-width: 700px) {
+
+
+				/* WP Block: Floating image ------------------------------ */
+
+				.ixn-picture-floating--alignleft,
+				.ixn-picture-floating--alignright {
+					display: block;
+					padding: 0;
+				}
+
+				.ixn-picture-floating--alignright {
+					float: right;
+					margin-top:  0;
+					margin-left: 48px;
+					margin-bottom: 48px;
+					margin-right: 0;
+				}
+
+				.ixn-picture-floating--alignleft {
+					float: left;
+					margin-top:  0;
+					margin-right: 48px;
+					margin-left: 0;
+					margin-bottom: 10px;
+				}
+
+			}
+
+			@media only screen and (min-width: 1025px) {
+
+				/* Floating image ------------------------------ */
+
+				.ixn-picture-floating--alignright {
+					margin-right: -96px;
+				}
+
+				.ixn-picture-floating--alignleft {
+					margin-left: -96px;
+				}
+
+			}
+
+			
+
+
+          </style>
+
+     </head>
+     <body>
+
+          <div class="container">
+
+               <h1>CSS inline sizes</h1>
+               <p>It fixes the content reflow issue on art directed images</p>
+
+               <style>
+
+               	@media only screen and (min-width: 375px) {
+
+					[data-id='img-1'] .ixn-picture__img {
+						height: 325px;
+						width: 325px 
+					}
+
+					[data-id='img-2'] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id="img-3"] .ixn-picture__img {
+						height: 578px;
+						width: 325px;
+					}
+
+					[data-id='img-4'] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id='img-5'] .ixn-picture__img {
+						height: 325px;
+						width: 272.5px;
+					}
+
+					[data-id='img-6'] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id='img-7'] .ixn-picture__img { 
+						height: 70px; 
+						width: 200px;
+					}
+
+					/* Image 8 uses the aspect ratio fix */
+					[data-id='img-8'] .ixn-picture__picture {
+						padding-top: calc( (325 / 325) * 100%);
+						position: relative;
+					}
+
+						[data-id='img-8'] .ixn-picture__img {
+							width: 325px;
+							height: 100%;
+							position: absolute;
+							top: 0;
+							left: 0;
+						}
+
+					[data-id="img-9"] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+				}
+
+				@media only screen and (min-width: 700px) {
+
+					[data-id='img-1'] .ixn-picture__img {
+						height: 410px;
+						width: 600px 
+					}
+
+					[data-id='img-2'] .ixn-picture__img {
+						height: 275px;
+						width: 275px;
+					}
+
+					[data-id="img-3"] .ixn-picture__img {
+						height: 489px;
+						width: 275px;
+					}
+
+					[data-id='img-5'] .ixn-picture__img {
+						height: 351px;
+						width: 383px;
+					}
+
+					[data-id='img-6'] .ixn-picture__img {
+						height: 280px;
+						width: 400px;
+					}
+					
+					[data-id='img-8'] .ixn-picture__picture  {
+						padding-top: calc(410 / 600 * 100%);
+						width: 600px 
+					}
+					
+					[data-id="img-9"] .ixn-picture__img {
+						height: 275px;
+						width: 275px;
+					}
+
+				}
+
+				@media only screen and (min-width: 1025px) {
+
+					[data-id='img-1'] .ixn-picture__img {
+						height: 700px;
+						width: 1024px 
+					}
+
+					[data-id='img-5'] .ixn-picture__img {
+						height: 280px;
+						width: 450px;
+					}
+
+					[data-id='img-6'] .ixn-picture__img {
+						height: 500px;
+						width: 350px;
+					}
+
+					[data-id='img-8'] .ixn-picture__picture {
+						padding-top: calc(700 / 1024 * 100%);
+						width: 1024px 
+					}
+
+				}
+
+				@media only screen and (min-width: 1200px) {
+
+					[data-id='img-2'] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id="img-3"] .ixn-picture__img {
+						height: 578px;
+						width: 325px;
+					}
+
+					[data-id='img-4'] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+				    	}
+
+					[data-id="img-9"] .ixn-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+				}
+
+			</style>
+
+
+			<figure class="ixn-picture" data-id="img-1">
+			   	
+			   	<picture class="ixn-picture__picture ixn-picture__placeholder">
+
+					<source media="(min-width: 1025px)" srcset="imgs/1-large-landscape.png, imgs/1-large-landscape@2x.png 2x">
+					
+					<source media="(min-width: 700px)" class="ixn-picture__medium" srcset="imgs/1-medium-landscape.png, imgs/1-medium-landscape@2x.png 2x">
+					
+					<source media="(max-width: 699px)" class="ixn-picture__small" srcset="imgs/1-small-square.png, imgs/1-small-square@2x.png 2x">
+					
+					<img alt="A panoramic view of the jungle with a river and mountains" class="ixn-picture__img" src="imgs/1-small-square.png">
+
+			   	</picture>
+
+			</figure>
+
+
+			<h2>Flexbox</h2>
+			<div class="wp-block-ixnweb-galleryv1-2  wp-block ixn-gallery container--narrow-bleed" data-id="gal-854">
+
+			<div class="ixn-flexbox">
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-2">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<source media="(min-width: 1200px)" srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x" class="ixn-picture__large">
+
+							<source media="(min-width: 700px)" srcset="imgs/2-small-square.png, imgs/2-small-square@2x.png 2x" class=" ixn-picture__medium">
+
+							<source media="(max-width: 699px)" srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x" class="ixn-picture__small">
+
+							<img alt="" class="ixn-picture__img" src="imgs/2-medium-square.png.jpg">
+
+						</picture>
+
+					</figure>
+
+				</div>
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-3">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<source media="(min-width: 1200px)" srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x" class="ixn-picture__large">
+							
+							<source media="(min-width: 700px)" srcset="imgs/3-small-portrait.png, imgs/3-small-portrait.png 2x" class=" ixn-gallery__medium ">
+
+							<source media="(max-width: 699px)" srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x" class=" ixn-gallery__small">
+							
+							<img class="ixn-picture__img ixn-gallery__img" src="imgs/2-medium-portrait.png">
+
+						</picture>
+
+					</figure>
+
+				</div>
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-4">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<source media="(max-width: 1200px)" srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x" class="ixn-picture__small">
+
+							<source media="(min-width: 700px)" srcset="imgs/4-small-square.png, imgs/4-small-square@2x.png 2x" class=" ixn-picture__medium">
+
+							<source media="(max-width: 699px)" srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x" class="ixn-picture__small">
+
+							<img alt="" class="ixn-picture__img" src="imgs/4-medium-square.png">
+
+						</picture>
+						<figcaption class="ixn-gallery__caption">AI generated images</figcaption>
+					</figure>
+
+				</div>
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-5">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<source media="(min-width: 1025px)" srcset="imgs/5-large-landscape.png, imgs/5-large-landscape@2x.png 2x" class="ixn-picture__large">
+
+							<source media="(min-width: 700px)" srcset="imgs/5-medium-square.png, imgs/5-medium-square@2x.png 2x" class=" ixn-picture__medium">
+
+							<source media="(max-width: 699px)" srcset="imgs/5-small-portrait.png, imgs/5-small-portrait@2x.png 2x" class="ixn-picture__small">
+
+							<img alt="" class="ixn-picture__img" src="imgs/5-small-portrait.png">
+
+						</picture>
+					</figure>
+
+				</div>
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-7">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<img alt="" class="ixn-picture__img" src="imgs/7-small-landscape@2x.png">
+
+						</picture>
+					</figure>
+
+				</div>
+
+				<div class="ixn-flexbox__item">
+
+					<figure class="ixn-picture" data-id="img-6">
+
+						<picture class="ixn-picture__picture ixn-picture__placeholder">
+							
+							<source media="(min-width: 1025px)" srcset="imgs/6-large-portrait.png, imgs/6-large-portrait@2x.png 2x" class="ixn-picture__large">
+
+							<source media="(min-width: 700px)" srcset="imgs/6-medium-landscape.png, imgs/6-medium-landscape@2x.png 2x" class=" ixn-picture__medium">
+
+							<source media="(max-width: 699px)" srcset="imgs/6-small-square.png, imgs/6-small-square@2x.png 2x" class="ixn-picture__small">
+
+							<img alt="" class="ixn-picture__img" src="imgs/6-small-square.png">
+
+						</picture>
+					</figure>
+
+				</div>
+				
+			</div>
+
+			<h2>Art directed + Responsive</h2>
+			<p>Uses the aspect ratio fix.</p>
+
+			<div class="ixn-fluid">
+
+				<figure class="ixn-picture ixn-picture--fluid" data-id="img-8">
+				   	<picture class="ixn-picture__picture ixn-picture__placeholder">
+						
+						<source media="(min-width: 1025px)" srcset="imgs/8-large-landscape.png, imgs/8-large-landscape@2x.png 2x">
+						
+						<source media="(min-width: 700px)" class="ixn-picture__medium" srcset="imgs/8-medium-landscape.png, imgs/8-medium-landscape@2x.png 2x">
+						
+						<source media="(max-width: 699px)" class="ixn-picture__small" srcset="imgs/8-small-square.png, imgs/8-small-square@2x.png 2x">
+						
+						<img alt="" class="ixn-picture__img" src="imgs/8-small-square.png">
+
+				   	</picture>
+				</figure>
+
+			</div>
+
+			<h2>Floated</h2>
+
+			<div class="ixn-floated">
+
+				<figure class="ixn-picture-floating ixn-picture-floating--alignleft" data-id="img-9">
+         
+					<picture class="ixn-picture__picture ixn-picture__placeholder ixn-picture-floating__picture">
+
+						<!--[if IE 9]><video style="display: none;"><![endif]-->
+						<source media="(max-width: 699px)" class="ixn-picture-floating__small" srcset="imgs/9-small-square.png, imgs/9-small-square@2x.png 2x">
+
+						<source media="(min-width: 700px)" class="ixn-picture-floating__medium" srcset="imgs/9-medium-square.png, imgs/9-medium-square@2x.png 2x">
+						<!--[if IE 9]></video><![endif]-->
+
+						<img alt="" class="ixn-picture__img" src="imgs/9-small-square.png">
+
+					</picture>
+
+				</figure>
+
+		          <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec pellentesque nunc euismod elit iaculis ultrices. Quisque eleifend, turpis sed consequat accumsan, quam eros scelerisque mauris, sit amet egestas urna massa eu turpis. Curabitur eget tellus sem. Fusce imperdiet magna quis turpis tincidunt, non ullamcorper felis suscipit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus turpis dolor, suscipit ac diam nec, hendrerit fermentum mauris. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec non urna ac nisi laoreet consectetur eu eu urna.</p>
+
+		     </div>
+
+
+	     </div>
+
+          <p><a href="">Go to full article</a><br><a href="">Go to GitHub</a></p>
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+
+     </body>
+</html>
+
