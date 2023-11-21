@@ -4,11 +4,20 @@
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1">
           
+          <link rel="stylesheet" href="lazyload.css">
+
           <style>
 
           	/* The style in this block are for layout purposes */
 
-			/* Placeholder graphic */
+          	/* Lazyload */
+
+			.lazyload,
+			.lazyloading {
+			   opacity: 0;
+			}
+
+			/* Lazyload placeholder graphic */
 
 			.ixi-picture__placeholder {  
 				background: #ffffa6 url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNjMuMzkgMjM4LjI1Ij48ZGVmcz48c3R5bGU+LmF7ZmlsbDojZmZmO308L3N0eWxlPjwvZGVmcz48cGF0aCBjbGFzcz0iYSIgZD0iTTE1OSwyMzguMjUsMCwwSDguNjdMMTYzLjM5LDIzOC4yNVoiLz48L3N2Zz4=") left top  no-repeat; 
@@ -301,13 +310,13 @@
 			   	
 			   	<picture class="ixi-picture__picture ixi-picture__placeholder">
 
-					<source media="(min-width: 1025px)" srcset="imgs/1-large-landscape.png, imgs/1-large-landscape@2x.png 2x">
+					<source media="(min-width: 1025px)" data-srcset="imgs/1-large-landscape.png, imgs/1-large-landscape@2x.png 2x">
 					
-					<source media="(min-width: 700px)" srcset="imgs/1-medium-landscape.png, imgs/1-medium-landscape@2x.png 2x">
+					<source media="(min-width: 700px)" data-srcset="imgs/1-medium-landscape.png, imgs/1-medium-landscape@2x.png 2x">
 					
-					<source media="(max-width: 699px)" srcset="imgs/1-small-square.png, imgs/1-small-square@2x.png 2x">
+					<source media="(max-width: 699px)" data-srcset="imgs/1-small-square.png, imgs/1-small-square@2x.png 2x">
 					
-					<img alt="A panoramic view of the jungle with a river and mountains" class="ixi-picture__img lazyload" src="imgs/1-small-square.png">
+					<img alt="A panoramic view of the jungle with a river and mountains" class="ixi-picture__img lazyload" data-src="imgs/1-small-square.png">
 
 			   	</picture>
 
@@ -326,13 +335,13 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<source media="(min-width: 1200px)" srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x">
+							<source media="(min-width: 1200px)" data-srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x">
 
-							<source media="(min-width: 700px)" srcset="imgs/2-small-square.png, imgs/2-small-square@2x.png 2x">
+							<source media="(min-width: 700px)" data-srcset="imgs/2-small-square.png, imgs/2-small-square@2x.png 2x">
 
-							<source media="(max-width: 699px)" srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x">
+							<source media="(max-width: 699px)" data-srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/2-medium-square.png">
+							<img alt="" class="ixi-picture__img lazyload" data-src="imgs/2-medium-square.png">
 
 						</picture>
 
@@ -348,13 +357,13 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<source media="(min-width: 1200px)" srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x">
+							<source media="(min-width: 1200px)" data-srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x">
 							
-							<source media="(min-width: 700px)" srcset="imgs/3-small-portrait.png, imgs/3-small-portrait@2x.png 2x">
+							<source media="(min-width: 700px)" data-srcset="imgs/3-small-portrait.png, imgs/3-small-portrait@2x.png 2x">
 
-							<source media="(max-width: 699px)" srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x">
+							<source media="(max-width: 699px)" data-srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x">
 							
-							<img class="ixi-picture__img lazyload" src="imgs/2-medium-portrait.png">
+							<img class="ixi-picture__img lazyload" data-src="imgs/2-medium-portrait.png">
 
 						</picture>
 
@@ -370,13 +379,13 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<source media="(max-width: 1200px)" srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x">
+							<source media="(max-width: 1200px)" data-srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x">
 
-							<source media="(min-width: 700px)" srcset="imgs/4-small-square.png, imgs/4-small-square@2x.png 2x">
+							<source media="(min-width: 700px)" data-srcset="imgs/4-small-square.png, imgs/4-small-square@2x.png 2x">
 
-							<source media="(max-width: 699px)" srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x">
+							<source media="(max-width: 699px)" data-srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/4-medium-square.png">
+							<img alt="" class="ixi-picture__img lazyload" data-src="imgs/4-medium-square.png">
 
 						</picture>
 
@@ -392,13 +401,13 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<source media="(min-width: 1025px)" srcset="imgs/5-large-landscape.png, imgs/5-large-landscape@2x.png 2x">
+							<source media="(min-width: 1025px)" data-srcset="imgs/5-large-landscape.png, imgs/5-large-landscape@2x.png 2x">
 
-							<source media="(min-width: 700px)" srcset="imgs/5-medium-square.png, imgs/5-medium-square@2x.png 2x">
+							<source media="(min-width: 700px)" data-srcset="imgs/5-medium-square.png, imgs/5-medium-square@2x.png 2x">
 
-							<source media="(max-width: 699px)" srcset="imgs/5-small-portrait.png, imgs/5-small-portrait@2x.png 2x">
+							<source media="(max-width: 699px)" data-srcset="imgs/5-small-portrait.png, imgs/5-small-portrait@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/5-small-portrait.png">
+							<img alt="" class="ixi-picture__img lazyload" data-src="imgs/5-small-portrait.png">
 
 						</picture>
 
@@ -414,7 +423,7 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/7-small-landscape@2x.png">
+							<img alt="" class="ixi-picture__img lazyload" data-src="imgs/7-small-landscape@2x.png">
 
 						</picture>
 
@@ -430,13 +439,13 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<source media="(min-width: 1025px)" srcset="imgs/6-large-portrait.png, imgs/6-large-portrait@2x.png 2x">
+							<source media="(min-width: 1025px)" data-srcset="imgs/6-large-portrait.png, imgs/6-large-portrait@2x.png 2x">
 
-							<source media="(min-width: 700px)" srcset="imgs/6-medium-landscape.png, imgs/6-medium-landscape@2x.png 2x">
+							<source media="(min-width: 700px)" data-srcset="imgs/6-medium-landscape.png, imgs/6-medium-landscape@2x.png 2x">
 
-							<source media="(max-width: 699px)" srcset="imgs/6-small-square.png, imgs/6-small-square@2x.png 2x">
+							<source media="(max-width: 699px)" data-srcset="imgs/6-small-square.png, imgs/6-small-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/6-small-square.png">
+							<img alt="" class="ixi-picture__img lazyload" data-src="imgs/6-small-square.png">
 
 						</picture>
 
@@ -457,13 +466,13 @@
 
 				   	<picture class="ixi-picture__picture ixi-picture__placeholder">
 						
-						<source media="(min-width: 1025px)" srcset="imgs/8-large-landscape.png, imgs/8-large-landscape@2x.png 2x">
+						<source media="(min-width: 1025px)" data-srcset="imgs/8-large-landscape.png, imgs/8-large-landscape@2x.png 2x">
 						
-						<source media="(min-width: 700px)" srcset="imgs/8-medium-landscape.png, imgs/8-medium-landscape@2x.png 2x">
+						<source media="(min-width: 700px)" data-srcset="imgs/8-medium-landscape.png, imgs/8-medium-landscape@2x.png 2x">
 						
-						<source media="(max-width: 699px)" srcset="imgs/8-small-square.png, imgs/8-small-square@2x.png 2x">
+						<source media="(max-width: 699px)" data-srcset="imgs/8-small-square.png, imgs/8-small-square@2x.png 2x">
 						
-						<img alt="" class="ixi-picture__img lazyload" src="imgs/8-small-square.png">
+						<img alt="" class="ixi-picture__img lazyload" data-src="imgs/8-small-square.png">
 
 				   	</picture>
 
@@ -481,11 +490,11 @@
          
 					<picture class="ixi-picture__picture ixi-picture__placeholder ixi-picture-floating__picture">
 
-						<source media="(max-width: 699px)" srcset="imgs/9-small-square.png, imgs/9-small-square@2x.png 2x">
+						<source media="(max-width: 699px)" data-srcset="imgs/9-small-square.png, imgs/9-small-square@2x.png 2x">
 
-						<source media="(min-width: 700px)" srcset="imgs/9-medium-square.png, imgs/9-medium-square@2x.png 2x">
+						<source media="(min-width: 700px)" data-srcset="imgs/9-medium-square.png, imgs/9-medium-square@2x.png 2x">
 
-						<img alt="" class="ixi-picture__img lazyload" src="imgs/9-small-square.png">
+						<img alt="" class="ixi-picture__img lazyload" data-src="imgs/9-small-square.png">
 
 					</picture>
 
@@ -504,6 +513,9 @@
           
           <p>&nbsp;</p>
           <p>&nbsp;</p>
+
+          <!-- Javascript after DOM is loaded -->
+          <script src="lazyload.js"></script> 
 
      </body>
 </html>
