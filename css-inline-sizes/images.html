@@ -21,7 +21,6 @@
 			body {
 				text-align: center;
 				font-family: "Trebuchet MS", Tahoma, sans-serif;
-				/* background-color: var(--ixi-color-primary--tint-80); */
 				font-size: 14pt;
 				line-height: 21pt;
 				letter-spacing: 0.3pt;
@@ -44,61 +43,70 @@
 				letter-spacing: -0.5pt;
 			}
 
-	       	/* Flexbox */
-	       
-	       	.ixi-flexbox {
-			    display: flex;
-			    flex-wrap: wrap;
-			    justify-content: center;
-			    align-items: stretch;
-			    align-content: flex-start;
-			    width: 100%;
-			    overflow: auto;
-			    flex-direction: row;
-			}
-
-				.ixi-flexbox__item {
-				    
-				    flex-basis: auto;
-				    margin: 12px;
-				}
-
-			/* Fluid picture */
-
-			.ixi-fluid { 
-				width: 100%; 
-				max-width: 100%;
-				height: auto;
-			}
-
-			.ixi-picture--fluid { 
-				display: flex;
-				align-items: stretch;
-				justify-content: center;
-				flex-direction: column;
-			}
-
-				.ixi-picture--fluid .ixi-picture__picture {
-					align-items: center;
-					display: inline-flex;
-					margin: 0 !important;
-					max-width: 100%;
-					max-height: 100%;
-					min-width: 100%;
-					min-height: 100%;
-				}
-
-				.ixi-picture--fluid .ixi-picture__img {
-					min-width: 100%;
-					min-height: 100%;
-				}
-
 			/* Floated picture */
 
 			.ixi-floated { max-width: 600px; margin: 0 auto; text-align: left; }
 
 			.ixi-picture-floating__picture {
 			   float: none;
+			}
+
+			/* More complex layouts start with a min screen width of 300px */
+			@media only screen and (min-width: 300px) {
+
+				/* Flexbox */
+	       
+		       	.ixi-flexbox {
+				    display: flex;
+				    flex-wrap: wrap;
+				    justify-content: center;
+				    align-items: stretch;
+				    align-content: flex-start;
+				    width: 100%;
+				    overflow: auto;
+				    flex-direction: row;
+				}
+
+				.ixi-flexbox__item {
+				    flex-basis: auto;
+				    margin: 12px;
+				}	
+
+				/* Fluid picture */
+
+				.ixi-fluid { 
+					width: 100%; 
+					max-width: 100%;
+					height: auto;
+				}
+
+				.ixi-picture--fluid { 
+					display: flex;
+					align-items: stretch;
+					justify-content: center;
+					flex-direction: column;
+				}
+
+					.ixi-picture--fluid .ixi-picture__picture {
+						align-items: center;
+						display: inline-flex;
+						margin: 0 !important;
+						max-width: 100%;
+						max-height: 100%;
+						min-width: 100%;
+						min-height: 100%;
+						position: relative;
+					}
+
+					.ixi-picture--fluid .ixi-picture__img {
+						min-width: 100%;
+						min-height: 100%;
+						height: 100%;
+						position: absolute;
+						top: 0;
+						left: 0;
+					}
+
 			}
 
 			@media only screen and (min-width: 700px) {
@@ -157,58 +165,65 @@
 
                	/* Inline sizes for images */
 
-				[data-id='img-1'] .ixi-picture__img {
-					height: 325px;
-					width: 325px 
+               	@media only screen and (max-width: 300px) {
+
+               		/* There is no support for really small screens in this demo, but display something decent */
+
+	               	.ixi-picture__img {
+	               		max-width: 100%;
+				   		height: auto;
+				   	}
+
 				}
 
-				[data-id='img-2'] .ixi-picture__img {
-					height: 325px;
-					width: 325px;
-				}
-
-				[data-id="img-3"] .ixi-picture__img {
-					height: 578px;
-					width: 325px;
-				}
-
-				[data-id='img-4'] .ixi-picture__img {
-					height: 325px;
-					width: 325px;
-				}
-
-				[data-id='img-5'] .ixi-picture__img {
-					height: 325px;
-					width: 273px;
-				}
-
-				[data-id='img-6'] .ixi-picture__img { 
-					height: 70px; 
-					width: 200px;
-				}
-
-				[data-id='img-7'] .ixi-picture__img {
-					height: 325px;
-					width: 325px;
-				}
-
-				/* Image 8 uses the aspect ratio fix */
-				[data-id='img-8'] .ixi-picture__picture {
-					padding-top: calc( (325 / 325) * 100%);
-					position: relative;
-				}
-
-					[data-id='img-8'] .ixi-picture__img {
-						width: 325px;
-						height: 100%;
-						position: absolute;
-						top: 0;
-						left: 0;
+				@media only screen and (min-width: 300px) {
+               	
+					[data-id='img-1'] .ixi-picture__img {
+						height: 325px;
+						width: 325px 
 					}
 
-				[data-id="img-9"] .ixi-picture__img {
-					height: 325px;
-					width: 325px;
+					[data-id='img-2'] .ixi-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id="img-3"] .ixi-picture__img {
+						height: 578px;
+						width: 325px;
+					}
+
+					[data-id='img-4'] .ixi-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					[data-id='img-5'] .ixi-picture__img {
+						height: 325px;
+						width: 273px;
+					}
+
+					[data-id='img-6'] .ixi-picture__img { 
+						height: 70px; 
+						width: 200px;
+					}
+
+					[data-id='img-7'] .ixi-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
+					/* Image 8 uses the aspect ratio fix */
+					[data-id='img-8'] .ixi-picture__picture {
+						padding-top: calc( (325 / 325) * 100%);
+						width: 325px;
+					}
+
+					[data-id="img-9"] .ixi-picture__img {
+						height: 325px;
+						width: 325px;
+					}
+
 				}
 
 				
@@ -243,7 +258,7 @@
 						padding-top: calc(410 / 600 * 100%);
 						width: 600px 
 					}
-					
+
 					[data-id="img-9"] .ixi-picture__img {
 						height: 275px;
 						width: 275px;
@@ -272,6 +287,7 @@
 						padding-top: calc(700 / 1024 * 100%);
 						width: 1024px 
 					}
+
 
 				}
 
@@ -307,7 +323,7 @@
 					
 					<source media="(max-width: 699px)" srcset="imgs/1-small-square.png, imgs/1-small-square@2x.png 2x">
 					
-					<img alt="A panoramic view of the jungle with a river and mountains" class="ixi-picture__img lazyload" src="imgs/1-small-square.png">
+					<img alt="A panoramic view of the jungle with a river and mountains" class="ixi-picture__img" src="imgs/1-small-square.png">
 
 			   	</picture>
 
@@ -332,7 +348,7 @@
 
 							<source media="(max-width: 699px)" srcset="imgs/2-medium-square.png, imgs/2-medium-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/2-medium-square.png">
+							<img alt="" class="ixi-picture__img" src="imgs/2-medium-square.png">
 
 						</picture>
 
@@ -354,7 +370,7 @@
 
 							<source media="(max-width: 699px)" srcset="imgs/3-medium-portrait.png, imgs/3-medium-portrait@2x.png 2x">
 							
-							<img class="ixi-picture__img lazyload" src="imgs/2-medium-portrait.png">
+							<img class="ixi-picture__img" src="imgs/2-medium-portrait.png">
 
 						</picture>
 
@@ -376,7 +392,7 @@
 
 							<source media="(max-width: 699px)" srcset="imgs/4-medium-square.png, imgs/4-medium-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/4-medium-square.png">
+							<img alt="" class="ixi-picture__img" src="imgs/4-medium-square.png">
 
 						</picture>
 
@@ -398,7 +414,7 @@
 
 							<source media="(max-width: 699px)" srcset="imgs/5-small-portrait.png, imgs/5-small-portrait@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/5-small-portrait.png">
+							<img alt="" class="ixi-picture__img" src="imgs/5-small-portrait.png">
 
 						</picture>
 
@@ -414,7 +430,7 @@
 
 						<picture class="ixi-picture__picture ixi-picture__placeholder">
 							
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/7-small-landscape@2x.png">
+							<img alt="" class="ixi-picture__img" src="imgs/7-small-landscape@2x.png">
 
 						</picture>
 
@@ -436,7 +452,7 @@
 
 							<source media="(max-width: 699px)" srcset="imgs/6-small-square.png, imgs/6-small-square@2x.png 2x">
 
-							<img alt="" class="ixi-picture__img lazyload" src="imgs/6-small-square.png">
+							<img alt="" class="ixi-picture__img" src="imgs/6-small-square.png">
 
 						</picture>
 
@@ -463,7 +479,7 @@
 						
 						<source media="(max-width: 699px)" srcset="imgs/8-small-square.png, imgs/8-small-square@2x.png 2x">
 						
-						<img alt="" class="ixi-picture__img lazyload" src="imgs/8-small-square.png">
+						<img alt="" class="ixi-picture__img" src="imgs/8-small-square.png">
 
 				   	</picture>
 
@@ -472,6 +488,8 @@
 				</figure>
 
 			</div>
+
+			
 
 			<h2>Floated</h2>
 
@@ -485,7 +503,7 @@
 
 						<source media="(min-width: 700px)" srcset="imgs/9-medium-square.png, imgs/9-medium-square@2x.png 2x">
 
-						<img alt="" class="ixi-picture__img lazyload" src="imgs/9-small-square.png">
+						<img alt="" class="ixi-picture__img" src="imgs/9-small-square.png">
 
 					</picture>
 

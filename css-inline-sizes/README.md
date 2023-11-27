@@ -19,6 +19,7 @@ The full documentation for the demo can be seen [here](https://ixi.studio/conten
 - Load the demo in your web browser
 - Lower your bandwidth using the inspector tool on your browser and reload the page.
 - Use the responsive design mode to resize the screen as the page loads.
+- Disable your cache if you want reload page and test again
 
 ### Links: 
 
@@ -120,34 +121,31 @@ CSS
 		max-height: 100%;
 		min-width: 100%;
 		min-height: 100%;
+		position: relative;
 	}
 
 	.ixi-picture--fluid .ixi-picture__img {
 		min-width: 100%;
 		min-height: 100%;
-	}
-
-/* Media queries for image sizes */
-
-/* Image size is 325x325 */
-
-[data-id='img-2'] .ixi-picture__picture {
-	padding-top: calc( (325 / 325) * 100%);
-	position: relative;
-}
-
-	[data-id='img-2'] .ixi-picture__img {
-		width: 325px;
 		height: 100%;
 		position: absolute;
 		top: 0;
 		left: 0;
 	}
 
+/* Media queries for image sizes */
+
+/* Image size is 325x325 */
+
+[data-id='img-8'] .ixi-picture__picture {
+	padding-top: calc( (325 / 325) * 100%);
+	width: 325px;
+}
+
 @media only screen and (min-width: 700px) {
 
 	/* Image size is 600x410 */
-	[data-id='img-2'] .ixi-picture__picture  {
+	[data-id='img-8'] .ixi-picture__picture  {
 		padding-top: calc(410 / 600 * 100%);
 		width: 600px 
 	}
@@ -157,7 +155,7 @@ CSS
 @media only screen and (min-width: 1025px) {
 
 	/* Image size is 1024x700 */
-	[data-id='img-2'] .ixi-picture__picture {
+	[data-id='img-8'] .ixi-picture__picture {
 		padding-top: calc(700 / 1024 * 100%);
 		width: 1024px 
 	}
