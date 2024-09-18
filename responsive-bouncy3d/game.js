@@ -1,5 +1,31 @@
 
 
+/********************************s
+ * RESPONSIVE   
+ */
+
+
+// Should the resize functions run once as part of update()
+let is_resize = false; 
+
+// Is the game restarted? 
+let is_game_restart = true; 
+
+// Is the game on the viewport enough
+let is_game_on_screen = true; 
+
+// Is this the first time for update()
+let is_first_update = false; 
+
+// Has the start button been clicked
+let has_game_started = false; 
+
+// Holds width and height of last screen sizes
+let screen_last_size = [window.innerWidth, window.innerHeight]; 
+
+// Compensate on y axis to change perspective on 3d platforms
+let platform_landscape_ball_compensate = -9;
+
 
 
 
@@ -41,15 +67,6 @@ let gameOptions = {
     // game scale between 2D and 3D
     gameScale: 0.1 
 }
-
-let is_resize = false; // Should the resize functions run once as part of update()
-let is_game_restart = true; // Is the game restarted? 
-let has_first_load = false; // Is this the first time for update()
-let is_start_btn = false; // Has the start button been clicked
-let screen_last_size = [];
-screen_last_size.push([window.innerWidth, window.innerHeight]);
-let platform_landscape_compensate = 0;
-let platform_landscape_ball_compensate = -9;
 
 
 class playGame extends Phaser.Scene {
@@ -145,7 +162,6 @@ class playGame extends Phaser.Scene {
         // add a camera
         this.camera3D  = new THREE.PerspectiveCamera(25, null, 0.1, 1000);
         this.camera3D.position.set(50 , 145, 80);
-
         this.camera3D.lookAt(20, 25, -10);
 
         // create an Extern Phaser game object
@@ -156,33 +172,26 @@ class playGame extends Phaser.Scene {
         // @ts-expect-error
         view.render = () => {
 
+            // this is needed
             this.renderer3D.state.reset();
             
             //console.log("running ");
 
+            // Is this a game restart after loosing
             if(is_game_restart) {
 
                 console.log("is_game_restart " + is_game_restart);
-
-console.log(this.scale);
-
-                //console.log(this.sys.game.canvas.width);
+                // Trigger resize positing
                 is_resize = true;
-                //this.update();
-                /*
-                this.camera3D.position.set(50 , 145, 80);
-                this.camera3D.aspect = window.innerWidth / window.innerHeight;
-                this.camera3D.lookAt(20, 25, -10);
-                this.camera3D.updateProjectionMatrix();
-                this.renderer3D.setViewport(0, 0, window.innerWidth,window.innerHeight);
-                //this.renderer3D.setSize(window.innerWidth,window.innerHeight);
-                
-                //*/
+
+                // Finish game restart variable
                 is_game_restart = false; 
+
             }
 
             this.renderer3D.render(this.threeScene, this.camera3D);
-            this.renderer3D.state.reset();
+            //this.renderer3D.state.reset();
+        
         };   
 
         return this.threeScene;
@@ -213,6 +222,7 @@ console.log(this.scale);
     // method to create the 3D ball
     add3DBall(){
 
+        // Create sphere
         const geometry = new THREE.SphereBufferGeometry(
             this.ball.displayWidth / 2 * gameOptions.gameScale, // radius
             64, //widthSegments
@@ -259,11 +269,8 @@ console.log(this.scale);
 
     // method to set a random platform Y position
     setPlatformY(){
-   
         var screen_height = this.sys.game.canvas.height; 
-        //console.log( Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[1], screen_height * gameOptions.platformHeightRange[0]) + " " + Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[0], screen_height * gameOptions.platformHeightRange[1]));
         return Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[1], screen_height * gameOptions.platformHeightRange[0]);
-
     }
 
     add2DPlatform(){
@@ -291,8 +298,8 @@ console.log(this.scale);
     // method to add a 3D platform, the argument is the 2D platform
     add3DPlatform(platform2D) { 
 
+        // create shape
         let geometry = new THREE.BoxBufferGeometry(1, 20, 20);
-        //console.log(parseInt("0x98ffff", 16));
         let material = new THREE.MeshStandardMaterial(); 
         let platform3D = new THREE.Mesh(geometry, material);
         platform3D.position.set(0, 0, 0);
@@ -334,7 +341,7 @@ console.log(this.scale);
     addListeners(){
 
         this.input.on("pointerdown", function(){
-            if(is_start_btn)
+            if(has_game_started)
             this.platformGroup.setVelocityX(-gameOptions.platformSpeed);
         }, this);
         this.input.on("pointerup", function(){
@@ -355,7 +362,7 @@ console.log(this.scale);
     // Used to run the update function just once
     manual_update() {
         this.update();
-        this.scene.pause();   
+        //this.scene.pause();   
     }
 
     // method to be executed at each frame
@@ -363,6 +370,8 @@ console.log(this.scale);
 
         var platform_new_y;
 console.log("updated is_resize " + is_resize);
+        
+        // Only use collide if not resizing
         if(!is_resize) {
             
             // collision management ball Vs platforms
@@ -373,21 +382,6 @@ console.log("updated is_resize " + is_resize);
 
         }
         
-
-        if(is_resize) {
-
-            this.ball.y = 0;
-            this.scene.pause();
-
-            // Get last screen values
-            var last_screen = screen_last_size[screen_last_size.length - 1];
-
-            var screen_last_height = last_screen[1],
-                screen_last_width = last_screen[0];
-
-        }
-
-
         var first_plat_position = false;
         // loop through all platforms
         this.platformGroup.getChildren().forEach(function(platform){
@@ -408,7 +402,7 @@ console.log("updated is_resize " + is_resize);
                 // adjust 3D platform scale and y position
                 platform.platform3D.scale.x = platform.displayWidth * gameOptions.gameScale;
                 
-                platform.platform3D.position.y = (this.sys.game.canvas.height - platform.y) * gameOptions.gameScale + platform_landscape_compensate;
+                platform.platform3D.position.y = (this.sys.game.canvas.height - platform.y) * gameOptions.gameScale;
 
 
             } 
@@ -416,26 +410,25 @@ console.log("updated is_resize " + is_resize);
             // If the screen is resizing, update each plaform
             if(is_resize) {
 
-                this.sys.game.canvas.width = window.innerWidth; 
-                this.sys.game.canvas.height = window.innerHeight; 
+                //this.sys.game.canvas.width = window.innerWidth; 
+                //this.sys.game.canvas.height = window.innerHeight; 
 
                 // Calculate percentage of positioning for ball, and platform
                 // Reapply
                 
                 //console.log(game.config);
-                game.config.height = this.sys.game.canvas.height;
+                //game.config.height = this.sys.game.canvas.height;
 
                 // Redefine height of 2D platform
+                //console.log(screen_last_size);
 
-                var past_height = (platform.y / screen_last_height) * 100;
+                var past_height = (platform.y / screen_last_size[1]) * 100;
                 platform_new_y = (past_height/100) * this.sys.game.canvas.height;
                 platform.y = platform_new_y;
 
-
                 // Redefine y of 3D platform
-
-                var past_height_3d = (platform.y - 40 / screen_last_height) * 100; 
-                platform.platform3D.position.y = (this.sys.game.canvas.height - platform.y) * gameOptions.gameScale + platform_landscape_compensate;
+                var past_height_3d = (platform.y - 40 / screen_last_size[1]) * 100; 
+                platform.platform3D.position.y = (this.sys.game.canvas.height - platform.y) * gameOptions.gameScale;
 
             } 
 
@@ -446,19 +439,18 @@ console.log("updated is_resize " + is_resize);
 
         if(is_resize) {
 
-            screen_last_size.push( [window.innerWidth, window.innerHeight] );
-
             // Reset ball to top to avoid loosing the game
             this.ball.y = 0;
-            
-            this.camera3D.aspect = this.sys.game.canvas.width / this.sys.game.canvas.height;
-            
-            // point the camera at a x, y, z coordinate
-            this.camera3D.updateProjectionMatrix();
-            this.renderer3D.setViewport(0, 0, window.innerWidth,window.innerHeight);
+            this.scene.pause();
 
-            //this.scale.setGameSize(this.sys.game.canvas.width, this.sys.game.canvas.height);
-            //this.scale.updateBounds();
+            screen_last_size = [window.innerWidth, window.innerHeight];
+
+            // Resize camera
+            this.camera3D.aspect = this.sys.game.canvas.width / this.sys.game.canvas.height;
+            this.camera3D.updateProjectionMatrix();
+
+            // Resize 3d viewport
+            this.renderer3D.setViewport(0, 0, window.innerWidth,window.innerHeight);
 
         }
 
@@ -473,29 +465,27 @@ console.log("updated is_resize " + is_resize);
             is_game_restart = true;
             this.scene.start("PlayGame");
 
-
         }
         
+        // Reposition ball 3D
         var ball3d_y = (this.sys.game.canvas.height - this.ball.y) * gameOptions.gameScale;
-        
         this.ball3D.position.y = (ball3d_y - platform_landscape_ball_compensate) ;
         this.ball3D.position.x = this.ball.x * gameOptions.gameScale;
-//console.log("this.ball3D.position.x " + this.ball3D.position.x);
+
        
         // Al resizing functions done, reset resize
-        if(is_resize) {
+        
+        // If this is a resize and the canvas is shown on screen
+        if(is_resize && is_game_on_screen) {
             this.scene.resume("PlayGame");
         }
+
+        // Cancel resize functions
         is_resize = false;
 
-        if(!has_first_load) {
-            //this.update();
-            
-//console.log("time " + time);
-            //if( time > 50 && time < 1500)
-                //this.scene.pause();   
-
-            has_first_load = true; 
+        // First update() run is donw
+        if(!is_first_update) {
+            is_first_update = true; 
         }
 
 
@@ -543,21 +533,24 @@ document.addEventListener("DOMContentLoaded", (event) => {
      * @param  {[type]} baseSize        [description]
      * @param  {[type]} displaySize     [description]
      * @param  {[type]} previousWidth   [description]
-     * @param  {[type]} previousHeight) {                       console.log("gameSize " + gameSize + " baseSize: " + baseSize + " displaySize: " + displaySize + " previousWidth: " + previousWidth + " previousHeight: " + previousHeight);        if(game && game.scene.isPaused("PlayGame")) {                                                is_resize [description]
+     * @param  {[type]} previousHeight) {                       
      * @return {[type]}                 [description]
      */
     game.scale.on('resize', function(gameSize, baseSize, displaySize, previousWidth, previousHeight) {
     
-        //has_first_load doesnt work because it runs earlier
-//console.log("gameSize " + gameSize + " baseSize: " + baseSize + " displaySize: " + displaySize + " previousWidth: " + previousWidth + " previousHeight: " + previousHeight);
+        // is_first_update doesnt work because it runs earlier than view.render
+        //console.log("gameSize " + gameSize + " baseSize: " + baseSize + " displaySize: " + displaySize + " previousWidth: " + previousWidth + " previousHeight: " + previousHeight);
+        
         if(game && game.scene.isPaused("PlayGame")) {
             
-            // Is a resize on the initial screen when the game hasn't been played
-            // or a resize while the game was paused
+            // Resize while the game was paused
             is_resize = true;       
             game.scene.scenes[0].manual_update();
 
         } else {
+            // Store screen previous width and height
+            //console.log(previousWidth);
+            //screen_last_size = [previousWidth, previousHeight];
             is_resize = true;       
         }
         
@@ -580,7 +573,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     btn_start.addEventListener("click", function(e) {
         intro.style.display = "none";
         game.scene.resume("PlayGame");
-        is_start_btn = true;
+        has_game_started = true;
     });
     //*/
 
@@ -594,26 +587,30 @@ document.addEventListener("DOMContentLoaded", (event) => {
         end: "+=100%",
         scrub: true,
         pin: true, 
-        //markers: true
-      },
+        //markers: true,
         onUpdate: (self) => {
 
-            /*
+            //*
             var progress = self.progress.toFixed(3),
                 direction = self.direction; 
 
-            console.log(progress >= 0.5);
-            console.log(direction);
+            //console.log(progress >= 0.5);
+            //console.log(direction);
 
-            if(progress >= 0.5 && direction == 1) {
+            if(progress >= 0.25 && direction == 1 && ! game.scene.isPaused("PlayGame")) {
+                console.log("Pause game");
+                is_game_on_screen = false;
                 //console.log(game);
-                //game.scene.pause();
-            } else {
-                //game.scene.resume("PlayGame");
+                game.scene.pause("PlayGame");
+            } else if(progress <= 0.2 && direction == -1 && game.scene.isPaused("PlayGame")) {
+                console.log("Play game");
+                is_game_on_screen = true;
+                game.scene.resume("PlayGame");
             }
             //*/
             
         }
+      }
     });
 
 
