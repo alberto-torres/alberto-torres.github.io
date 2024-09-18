@@ -1,23 +1,3 @@
-/*WebFontConfig = {
-  custom: {
-    families: ['chumley_ixiregular', 'rooneysansregular', 'rooneysansbold'],
-    urls: ['fonts.css']
-  },
-  active: function() {
-    console.log("active");
-    if(this.scoreText)
-      this.scoreText.setFont('chumley_ixiregular');
-  },
-  
-  loading: function() {},
-  active: function() {},
-  inactive: function() {},
-  fontloading: function(familyName, fvd) {},
-  fontactive: function(familyName, fvd) {},
-  fontinactive: function(familyName, fvd) {}
-  
-};
-//*/
 
 
 
@@ -62,75 +42,30 @@ let gameOptions = {
     gameScale: 0.1 
 }
 
-let is_resize = false; // Is the screen resizing at the moment
-let has_first_load = false; // Is this the first start
+let is_resize = false; // Should the resize functions run once as part of update()
+let is_game_restart = true; // Is the game restarted? 
+let has_first_load = false; // Is this the first time for update()
+let is_start_btn = false; // Has the start button been clicked
 let screen_last_size = [];
 screen_last_size.push([window.innerWidth, window.innerHeight]);
 let platform_landscape_compensate = 0;
 let platform_landscape_ball_compensate = -9;
 
-// Throttler 
 
-var throttler_timeout;
+class playGame extends Phaser.Scene {
 
-function throttler( callback ) {
-
-  // ignore resize events as long as an actualResizeHandler execution is in the queue
-  if ( !throttler_timeout ) {
-     throttler_timeout = setTimeout(function() {
-
-        throttler_timeout = null;
-        callback();
-
-     // Execution interval
-     }, 250);
-  }
-
-}
-
-// Window Resize functions 
-
-function resize(e) {
-    
-    //has_first_load doesnt work because it runs earlier
-
-    if(game && game.scene.isPaused("PlayGame")) {
-        // restart the game
-        //game.scene.start("PlayGame");
-        //console.log( game.getTime() );
-        //console.log( game.getFrame() );
-        
-        //game = new Phaser.Game(gameConfig);
-        
-        is_resize = true;       
-        game.scene.scenes[0].manual_update();
-
-        //game.destroy();
-        //game.update();
-    } else {
-        is_resize = true;       
-    }
-
-};
-
-//*
-window.addEventListener("resize", function() {
-  throttler(resize);  
-}, false);
-//*/
-
-
-class playGame extends Phaser.Scene{
     constructor(){
-        super("PlayGame");
+
+        super({
+            key: 'PlayGame'
+        });
+
     }
     preload(){
         
         // Load SVG for simple shapes
         this.load.svg("ball", "ball.svg", {width: 50, height: 50});
         this.load.svg("ground", "ground.svg", {width: 64, height: 20});
-        //this.load.image("ground", "ground.png");
-        //this.load.image("ball", "ball.png");
         
     }
     create() {
@@ -156,51 +91,103 @@ class playGame extends Phaser.Scene{
     }
 
     // method to create the 3D world
-    create3DWorld(){
+    create3DWorld() {
 
-        // 3D world creation
-        this.phaser3D = new Phaser3D(this, {
 
-            // camera fov, learn more at https://threejsfundamentals.org/threejs/lessons/threejs-cameras.html
-            fov: 25,
-            //*
-            // camera x, y and z position
-            x: 50,
-            y: 145,
-            z: 80
-            //*/
+        //* threejs real implementation
+        // variables to store canvas width and height
+        var width = this.sys.game.canvas.width;
+        var height = this.sys.game.canvas.height;
 
+        this.threeScene = new THREE.Scene();
+
+        // create the renderer
+        this.renderer3D = new THREE.WebGLRenderer({
+            canvas: this.sys.game.canvas,
+            context: this.sys.game.context,
+            antialias: true
         });
-
-        // point the camera at a x, y, z coordinate
-        this.phaser3D.camera.lookAt(20, 25, -10);
-        //this.phaser3D.camera.rotation.z = 0.3;
+        //  We don't want three.js to wipe our gl context!
+        this.renderer3D.autoClear = false;
 
         // enable shadows
-        this.phaser3D.enableShadows();
+        this.renderer3D.shadowMap.enabled = true;
+        this.renderer3D.shadowMap.type = THREE.PCFSoftShadowMap;
 
         // enable gamma correction, learn more at https://en.wikipedia.org/wiki/Gamma_correction
-        this.phaser3D.enableGamma();
+        this.renderer3D.gammaInput = true;
+        this.renderer3D.gammaOutput = true;
 
         // add a soft, white ambient light
-        this.phaser3D.add.ambientLight({
-            color: 0xffffff,
-            intensity: 1.5
-        });
-
+        const ambient_light = new THREE.AmbientLight(0xffffff, 1.5);
+        this.threeScene.add(ambient_light);
+ 
         // add a bright, white spotlight, learn more at https://threejs.org/docs/#api/en/lights/SpotLight
-        let spotlight = this.phaser3D.add.spotLight({
-            color: 0xffffff,
-            intensity: 1,
-            angle: 0.4,
-            decay: 0.1,
-            x: 0,
-            y: 250,
-            z: 80
-        });
+        const spot_light = new THREE.SpotLight(
+            0xffffff,  // color
+            1, //intensity 
+            0, // distance
+            0.4, // angle
+            0.05, //penumbra, 
+            0.1 //decay
+        );
+        spot_light.position.set(0, 250, 80);
 
         // enable the spotlight to cast shadow
-        this.phaser3D.setShadow(spotlight);
+        spot_light.castShadow = true;
+        spot_light.shadow.mapSize.width = width;
+        spot_light.shadow.mapSize.height = height;
+        spot_light.shadow.camera.near = 1;
+        spot_light.shadow.camera.far = 1000;
+
+        this.threeScene.add(spot_light);
+
+        // add a camera
+        this.camera3D  = new THREE.PerspectiveCamera(25, null, 0.1, 1000);
+        this.camera3D.position.set(50 , 145, 80);
+
+        this.camera3D.lookAt(20, 25, -10);
+
+        // create an Extern Phaser game object
+        const view = this.add.extern();
+      
+        // custom renderer
+        // next line is needed to avoid TypeScript errors
+        // @ts-expect-error
+        view.render = () => {
+
+            this.renderer3D.state.reset();
+            
+            //console.log("running ");
+
+            if(is_game_restart) {
+
+                console.log("is_game_restart " + is_game_restart);
+
+console.log(this.scale);
+
+                //console.log(this.sys.game.canvas.width);
+                is_resize = true;
+                //this.update();
+                /*
+                this.camera3D.position.set(50 , 145, 80);
+                this.camera3D.aspect = window.innerWidth / window.innerHeight;
+                this.camera3D.lookAt(20, 25, -10);
+                this.camera3D.updateProjectionMatrix();
+                this.renderer3D.setViewport(0, 0, window.innerWidth,window.innerHeight);
+                //this.renderer3D.setSize(window.innerWidth,window.innerHeight);
+                
+                //*/
+                is_game_restart = false; 
+            }
+
+            this.renderer3D.render(this.threeScene, this.camera3D);
+            this.renderer3D.state.reset();
+        };   
+
+        return this.threeScene;
+
+
     }
 
 
@@ -226,22 +213,29 @@ class playGame extends Phaser.Scene{
     // method to create the 3D ball
     add3DBall(){
 
-        // create a red sphere
-        this.ball3D = this.phaser3D.add.sphere({
-            radius: this.ball.displayWidth / 2 * gameOptions.gameScale,
-            widthSegments: 64,
-            heightSegments: 64,
-            //color: 0xf50087, pink
-            color: 0x98ffff,
-            x: 0,
-            y: 0,
-            z: 0,
-        });
+        const geometry = new THREE.SphereBufferGeometry(
+            this.ball.displayWidth / 2 * gameOptions.gameScale, // radius
+            64, //widthSegments
+            64, //heightSegments
+        );
+
+        // Create material
+        let material = new THREE.MeshStandardMaterial({color: parseInt("0x98ffff", 16)}); 
+
+        // Mesh
+        let obj = new THREE.Mesh(geometry, material);
+        obj.position.set(0, 0, 0);
+        this.ball3D = obj;
 
         // Make sure ball renders on top
         this.ball3D.renderOrder = 200;
+        
         // set the ball to cast a shadow
-        this.phaser3D.castShadow(this.ball3D);
+        this.ball3D.castShadow = true;
+        
+        // Add ball to scene
+        this.threeScene.add(this.ball3D);
+
 
     }
 
@@ -265,21 +259,10 @@ class playGame extends Phaser.Scene{
 
     // method to set a random platform Y position
     setPlatformY(){
-        
-        var screen_orientation = this.get_screen_orientation();
-
-        // Accounts for aspect ratios, but need to test more. Comment line before this to test. 
-        var screen_height = this.sys.game.canvas.height,
-            screen_width = this.sys.game.canvas.width; 
-        
-        // Portrait view
-        if(screen_orientation == "portrait") {
-            return Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[0], screen_height * gameOptions.platformHeightRange[1]);
-        } 
-        // Landscape view
-        else if( screen_orientation == "landscape" ) {
-            return Phaser.Math.Between( screen_height * gameOptions.platformHeightRange[1], screen_height * gameOptions.platformHeightRange[0] );
-        }
+   
+        var screen_height = this.sys.game.canvas.height; 
+        //console.log( Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[1], screen_height * gameOptions.platformHeightRange[0]) + " " + Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[0], screen_height * gameOptions.platformHeightRange[1]));
+        return Phaser.Math.Between(screen_height * gameOptions.platformHeightRange[1], screen_height * gameOptions.platformHeightRange[0]);
 
     }
 
@@ -306,24 +289,21 @@ class playGame extends Phaser.Scene{
     }
 
     // method to add a 3D platform, the argument is the 2D platform
-    add3DPlatform(platform2D){
+    add3DPlatform(platform2D) { 
 
-        // create a  box
-        let platform3D = this.phaser3D.add.box({
-            width: 1,
-            height: 20,
-            depth: 20,
-            color: 0xffFFFF,
-            x: 0,
-            y: (this.sys.game.canvas.height - platform2D.y) * gameOptions.gameScale + platform_landscape_compensate,
-            z: 0
-        });
-        
+        let geometry = new THREE.BoxBufferGeometry(1, 20, 20);
+        //console.log(parseInt("0x98ffff", 16));
+        let material = new THREE.MeshStandardMaterial(); 
+        let platform3D = new THREE.Mesh(geometry, material);
+        platform3D.position.set(0, 0, 0);
+
         // platform will receive shadows
-        this.phaser3D.receiveShadow(platform3D);
+        platform3D.receiveShadow = true;
 
         // scale the 3D platform to make it match 2D platform size
         platform3D.scale.x = platform2D.displayWidth * gameOptions.gameScale;
+
+        this.threeScene.add(platform3D);
 
         return platform3D;
 
@@ -338,8 +318,8 @@ class playGame extends Phaser.Scene{
             fontSize: '20px',
             fontFamily: 'chumley_ixiregular',
             color: '#211b16',
+            lineHeight: '27px',
             align: 'left',
-            letterSpacing: '10px',
         });
 
     }
@@ -347,13 +327,14 @@ class playGame extends Phaser.Scene{
     // method to update the score
     updateScore(inc){
         this.score += inc;
-        this.scoreText.text = "Score: " + this.score + "\nBest: " + this.topScore;
+        this.scoreText.text = "Puntos: " + this.score + "\nRecord: " + this.topScore;
     }
 
     // listeners to make platforms move and stop
     addListeners(){
 
         this.input.on("pointerdown", function(){
+            if(is_start_btn)
             this.platformGroup.setVelocityX(-gameOptions.platformSpeed);
         }, this);
         this.input.on("pointerup", function(){
@@ -378,7 +359,7 @@ class playGame extends Phaser.Scene{
     }
 
     // method to be executed at each frame
-    update(){
+    update(time, delta){
 
         var platform_new_y;
 console.log("updated is_resize " + is_resize);
@@ -403,9 +384,6 @@ console.log("updated is_resize " + is_resize);
 
             var screen_last_height = last_screen[1],
                 screen_last_width = last_screen[0];
-
-            //console.log("screen_last_height " + screen_last_height + " screen_last_width: " + screen_last_width);
-            //this.ball.setSize(30, 50, true);
 
         }
 
@@ -438,7 +416,6 @@ console.log("updated is_resize " + is_resize);
             // If the screen is resizing, update each plaform
             if(is_resize) {
 
-                
                 this.sys.game.canvas.width = window.innerWidth; 
                 this.sys.game.canvas.height = window.innerHeight; 
 
@@ -469,27 +446,19 @@ console.log("updated is_resize " + is_resize);
 
         if(is_resize) {
 
-            console.log("is_resize ");
             screen_last_size.push( [window.innerWidth, window.innerHeight] );
 
-                
-//game.resize();
-
             // Reset ball to top to avoid loosing the game
-            //this.ball.y = 0;
+            this.ball.y = 0;
             
-            this.phaser3D.camera.aspect = this.sys.game.canvas.width / this.sys.game.canvas.height;
+            this.camera3D.aspect = this.sys.game.canvas.width / this.sys.game.canvas.height;
             
             // point the camera at a x, y, z coordinate
-            this.phaser3D.camera.updateProjectionMatrix();
+            this.camera3D.updateProjectionMatrix();
+            this.renderer3D.setViewport(0, 0, window.innerWidth,window.innerHeight);
 
-            //this.phaser3D.renderer.setSize(this.sys.game.canvas.width,this.sys.game.canvas.height);
-            //this.phaser3D.renderer.setViewport(0, 0, this.sys.game.canvas.width,this.sys.game.canvas.height);
-console.log( "this.sys.game.canvas.width,this.sys.game.canvas.height " + this.sys.game.canvas.width + " " + this.sys.game.canvas.height);
-            this.phaser3D.renderer.setViewport(0, 0, window.innerWidth,window.innerHeight);
-console.log( "this.sys.game.canvas.width,this.sys.game.canvas.height " + window.innerWidth + " " + window.innerHeight);
-            //this.phaser3D.renderer.resetState();
-            this.phaser3D.renderer.render(this.phaser3D.scene, this.phaser3D.camera);
+            //this.scale.setGameSize(this.sys.game.canvas.width, this.sys.game.canvas.height);
+            //this.scale.updateBounds();
 
         }
 
@@ -501,16 +470,18 @@ console.log( "this.sys.game.canvas.width,this.sys.game.canvas.height " + window.
             localStorage.setItem(gameOptions.localStorageName, Math.max(this.score, this.topScore));
 
             // restart the game
+            is_game_restart = true;
             this.scene.start("PlayGame");
+
 
         }
         
-        var width = window.innerWidth, height = window.innerHeight;        
         var ball3d_y = (this.sys.game.canvas.height - this.ball.y) * gameOptions.gameScale;
         
         this.ball3D.position.y = (ball3d_y - platform_landscape_ball_compensate) ;
         this.ball3D.position.x = this.ball.x * gameOptions.gameScale;
-
+//console.log("this.ball3D.position.x " + this.ball3D.position.x);
+       
         // Al resizing functions done, reset resize
         if(is_resize) {
             this.scene.resume("PlayGame");
@@ -518,30 +489,17 @@ console.log( "this.sys.game.canvas.width,this.sys.game.canvas.height " + window.
         is_resize = false;
 
         if(!has_first_load) {
-            this.scene.pause();   
+            //this.update();
+            
+//console.log("time " + time);
+            //if( time > 50 && time < 1500)
+                //this.scene.pause();   
+
             has_first_load = true; 
         }
 
-    }
 
-    get_screen_orientation() {
-
-        // Accounts for aspect ratios, but need to test more. Comment line before this to test. 
-        var screen_height = this.sys.game.canvas.height,
-            screen_width = this.sys.game.canvas.width; 
-        
-        // Portrait view
-        if(screen_height > screen_width) {
-            return "portrait";
-        } 
-        // Landscape view
-        else if( screen_width > screen_height ) {
-            return "landscape";
-        }
-
-    }
-
-    
+    }    
 
 }
 
@@ -579,8 +537,31 @@ document.addEventListener("DOMContentLoaded", (event) => {
     window.focus();
 
 
-
+    /**
+     * Resize function for Phaser
+     * @param  {[type]} gameSize        [description]
+     * @param  {[type]} baseSize        [description]
+     * @param  {[type]} displaySize     [description]
+     * @param  {[type]} previousWidth   [description]
+     * @param  {[type]} previousHeight) {                       console.log("gameSize " + gameSize + " baseSize: " + baseSize + " displaySize: " + displaySize + " previousWidth: " + previousWidth + " previousHeight: " + previousHeight);        if(game && game.scene.isPaused("PlayGame")) {                                                is_resize [description]
+     * @return {[type]}                 [description]
+     */
+    game.scale.on('resize', function(gameSize, baseSize, displaySize, previousWidth, previousHeight) {
     
+        //has_first_load doesnt work because it runs earlier
+//console.log("gameSize " + gameSize + " baseSize: " + baseSize + " displaySize: " + displaySize + " previousWidth: " + previousWidth + " previousHeight: " + previousHeight);
+        if(game && game.scene.isPaused("PlayGame")) {
+            
+            // Is a resize on the initial screen when the game hasn't been played
+            // or a resize while the game was paused
+            is_resize = true;       
+            game.scene.scenes[0].manual_update();
+
+        } else {
+            is_resize = true;       
+        }
+        
+    }); 
 
 
     //game.scene.pause("PlayGame");
@@ -599,29 +580,46 @@ document.addEventListener("DOMContentLoaded", (event) => {
     btn_start.addEventListener("click", function(e) {
         intro.style.display = "none";
         game.scene.resume("PlayGame");
+        is_start_btn = true;
     });
     //*/
 
+    gsap.to(".panel:not(:last-child)", {
+      yPercent: -100, 
+      ease: "none",
+      stagger: 0.5,
+      scrollTrigger: {
+        trigger: "#container",
+        start: "top top",
+        end: "+=100%",
+        scrub: true,
+        pin: true, 
+        //markers: true
+      },
+        onUpdate: (self) => {
+
+            /*
+            var progress = self.progress.toFixed(3),
+                direction = self.direction; 
+
+            console.log(progress >= 0.5);
+            console.log(direction);
+
+            if(progress >= 0.5 && direction == 1) {
+                //console.log(game);
+                //game.scene.pause();
+            } else {
+                //game.scene.resume("PlayGame");
+            }
+            //*/
+            
+        }
+    });
 
 
-            gsap.to(".panel:not(:last-child)", {
-              yPercent: -100, 
-              ease: "none",
-              stagger: 0.5,
-              scrollTrigger: {
-                trigger: "#container",
-                start: "top top",
-                end: "+=300%",
-                scrub: true,
-                pin: true
-              },
-              onUpdate: () => {
-                console.log("asd");
-              }
-            });
+    //gsap.matchMedia()
 
-
-            gsap.set(".panel", {zIndex: (i, target, targets) => targets.length - i});
+    gsap.set(".panel", {zIndex: (i, target, targets) => targets.length - i});
 
 
 
